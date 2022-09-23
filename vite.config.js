@@ -33,6 +33,7 @@ const linkOutputDir = isDev()
 
 export default defineConfig({
     root: "rvasmweb/web",
+    base: '',
     plugins: [
         VitePluginFonts({
             google: {
