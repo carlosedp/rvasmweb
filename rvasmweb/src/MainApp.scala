@@ -18,11 +18,10 @@ object MainApp:
 
     // Create input textarea
     addNode(appnode, "Assembly Input:", "p")
-    val asminput = document.createElement("textarea").asInstanceOf[TextArea]
+    val asminput = addNode(appnode, "", "textarea", "asminput").asInstanceOf[TextArea]
     asminput.id = "asminput"
     asminput.spellcheck = false
     asminput.title = "Hitting enter or backspace also assembles to output"
-    appnode.appendChild(asminput)
 
     // Set initial value
     asminput.textContent = """|addi x0, x0, 0

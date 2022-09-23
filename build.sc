@@ -39,7 +39,6 @@ object rvasmweb extends ScalaJSModule with Base {
   def ivyDeps = super.ivyDeps() ++ Agg(
     ivy"org.scala-js::scalajs-dom::${libVersion.scalajsdom}",
     ivy"com.carlosedp::riscvassembler::${libVersion.riscvassembler}",
-    ivy"com.raquo::laminar::${libVersion.laminar}",
   )
 
   def scalaJSUseMainModuleInitializer = true
