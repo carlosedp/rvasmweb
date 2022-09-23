@@ -1,7 +1,7 @@
 package com.carlosedp
 package rvasmweb
 
-import scala.scalajs.js.annotation.JSExportTopLevel
+// import scala.scalajs.js.annotation.JSExportTopLevel
 
 import com.carlosedp.riscvassembler.RISCVAssembler
 import org.scalajs.dom.*
@@ -20,8 +20,8 @@ object MainApp:
     addNode(appnode, "Assembly Input:", "p")
     val asminput = document.createElement("textarea").asInstanceOf[TextArea]
     asminput.id = "asminput"
-    asminput.className = "pre .code"
     asminput.spellcheck = false
+    asminput.title = "Hitting enter or backspace also assembles to output"
     appnode.appendChild(asminput)
 
     // Set initial value
@@ -34,7 +34,16 @@ object MainApp:
     addNode(appnode, "Hex Output:", "p")
     val hexout = addNode(appnode, "", "textarea", "hexoutput").asInstanceOf[TextArea]
     hexout.readOnly = true
+    hexout.title = "Clicking the output area copies data to clipboard"
     addNode(appnode, nodeType = "br")
+    hexout.addEventListener(
+      "click",
+      (e: MouseEvent) => {
+        hexout.select()
+        document.execCommand("copy")
+        window.alert("Content copied to clipboard")
+      },
+    )
 
     // Create Button
     val assembleButton = document.createElement("button")
