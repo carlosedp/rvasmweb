@@ -42,35 +42,28 @@ object MainApp:
     assembleButton.addEventListener(
       "click",
       (e: MouseEvent) => {
-        // println("Clicked")
-        val out = RISCVAssembler.fromString(asminput.value).trim
-        // println(asminput.value)
-        // println(out)
-        updateNode("hexoutput", out)
+        assemble(asminput, hexout)
       },
     )
     appnode.appendChild(assembleButton)
 
     // Initialize
-    // println("Input: ")
-    // println(asminput.asInstanceOf[TextArea].value)
-    val out = RISCVAssembler.fromString(asminput.textContent).trim
-    hexout.textContent = out
-    // println("Output:")
-    // println(out)
+    assemble(asminput, hexout)
+    // Attach event handler to input TextArea
+    asminput.onkeydown = { (e: KeyboardEvent) =>
+      if (Seq(KeyCode.Backspace, KeyCode.Enter).contains(e.keyCode)) assemble(asminput, hexout)
+    }
 
   def addNode(
     targetNode: Node,
     text:       String = "",
     nodeType:   String = "p",
     id:         String = "",
-    nodeClass:  String = "",
   ): Node =
     val n = document.createElement(nodeType)
     n.textContent = text
     n.id = id
     targetNode.appendChild(n)
 
-  def updateNode(id: String, text: String) =
-    val node = document.getElementById(id)
-    node.textContent = text
+  def assemble(in: TextArea, out: TextArea) =
+    out.textContent = RISCVAssembler.fromString(in.value).trim
