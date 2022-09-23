@@ -1,0 +1,27 @@
+{
+  "name": "rvasmweb",
+  "description": "RISC-V Assembler Web Application",
+  "author": "Carlos Eduardo de Paula",
+  "license": "MIT",
+  "version": "0.0.1",
+  "dependencies": {
+    "jsdom": "^20.0.0",
+    "vite": "^3.1.1"
+  },
+  "scripts": {
+    "testall": "./mill __.test",
+    "lint": "./mill lint",
+    "deps": "./mill deps",
+    "build": "./node_modules/.bin/vite build && echo 'Build complete on ./dist'",
+    "preview": "./node_modules/.bin/vite preview",
+    "start": "./node_modules/.bin/vite",
+    "dev": "./node_modules/.bin/vite",
+    "testf": "./mill rvasmweb.test",
+    "watchf": "./mill -w rvasmweb.test",
+    "cleanall": "rm -rf .bloop .vscode .metals .bsp out target project/.bloop project/{project,.bloop,target} node_modules dist"
+  },
+  "devDependencies": {
+    "sass": "^1.54.9",
+    "vite-plugin-fonts": "^0.6.0"
+  }
+}
