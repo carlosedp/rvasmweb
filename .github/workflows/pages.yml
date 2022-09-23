@@ -48,6 +48,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Run tests
+        run: ./mill __.test
+
       - name: Build site
         run: npm run build
 

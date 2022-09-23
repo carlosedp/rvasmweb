@@ -2,7 +2,7 @@
 
 [![Scala CI](https://github.com/carlosedp/rvasmweb/actions/workflows/scala.yml/badge.svg)](https://github.com/carlosedp/rvasmweb/actions/workflows/scala.yml)
 
-An experimental RISC-V Assembly web app built on Scala.js.
+An experimental RISC-V Assembler web app built on Scala.js.
 
 The application is based on the [riscvassembler](https://github.com/carlosedp/riscvassembler) Scala library.
 
