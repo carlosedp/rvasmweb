@@ -14,10 +14,11 @@
     "deps": "./mill deps",
     "build": "./node_modules/.bin/vite build && echo 'Build complete on ./dist'",
     "preview": "./node_modules/.bin/vite preview",
-    "start": "./node_modules/.bin/vite",
+    "start": "./node_modules/.bin/vite --host",
     "dev": "./node_modules/.bin/vite",
-    "testf": "./mill rvasmweb.test",
-    "watchf": "./mill -w rvasmweb.test",
+    "test": "./mill rvasmweb.test",
+    "wtest": "./mill -w rvasmweb.test",
+    "wjs": "./mill -w rvasmweb.fastLinkJS",
     "cleanall": "rm -rf .bloop .vscode .metals .bsp out target project/.bloop project/{project,.bloop,target} node_modules dist"
   },
   "devDependencies": {
