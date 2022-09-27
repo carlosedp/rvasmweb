@@ -16,14 +16,14 @@ object libVersion {
   val organizeimports = "0.6.0"
   val scalajsdom      = "2.3.0"
   val scalatest       = "3.2.13"
-  val riscvassembler  = "1.4.0"
+  val riscvassembler  = "1.5.1"
   val laminar         = "0.14.2"
 }
 
 trait Base extends ScalaModule with TpolecatModule with ScalafmtModule with ScalafixModule {
   override def scalaVersion = libVersion.scala
   def scalafixIvyDeps       = Agg(ivy"com.github.liancheng::organize-imports:${libVersion.organizeimports}")
-  def repositoriesTask = T.task { // Add snapshot repositories in case needed
+  def repositoriesTask = T.task {
     super.repositoriesTask() ++ Seq("oss", "s01.oss")
       .map(r => s"https://$r.sonatype.org/content/repositories/snapshots")
       .map(MavenRepository(_))
@@ -66,9 +66,6 @@ object rvasmweb extends ScalaJSModule with Base {
 // -----------------------------------------------------------------------------
 // Global commands
 // -----------------------------------------------------------------------------
-
-// Toplevel commands
-// Toplevel commands and aliases
 def runTasks(t: Seq[String])(implicit ev: eval.Evaluator) = T.task {
   mill.main.MainModule.evaluateTasks(
     ev,

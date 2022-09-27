@@ -13,6 +13,13 @@ object MainApp:
     document.addEventListener("DOMContentLoaded", (e: Event) => setupUI())
 
   def setupUI() =
+    // if window.location.pathname == "/api" then
+    //   println(window.location.search)
+    //   val asmParam = URLSearchParams(window.location.search).get("asm")
+    //   val hex      = RISCVAssembler.fromString(asmParam)
+    //   println(hex)
+    // else
+
     val appnode = document.getElementById("app")
     addNode(appnode, "Scala.js RISC-V Assembler!", "h2")
 
@@ -54,6 +61,23 @@ object MainApp:
       },
     )
     appnode.appendChild(assembleButton)
+
+    val buildinfo = addNode(appnode, "", "div", "buildinfo")
+    val link      = document.createElement("a").asInstanceOf[Anchor]
+    link.href = "https://github.com/carlosedp/riscvassembler"
+    link.target = "_blank"
+    link.innerHTML = "RISC-V Assembler library";
+    buildinfo.appendChild(link)
+    val p = document.createElement("p").asInstanceOf[Paragraph]
+    p.textContent = s"Version: ${RISCVAssembler.AppInfo.revision}"
+    buildinfo.appendChild(p)
+
+    // addNode(
+    //   buildinfo,
+    //   s"${link.outerHTML} version ${RISCVAssembler.AppInfo.revision}",
+    //   "p",
+    // )
+    addNode(buildinfo, s"Build date: ${RISCVAssembler.AppInfo.buildDate}", "p")
 
     // Initialize
     assemble(asminput, hexout)
