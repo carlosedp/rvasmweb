@@ -1,101 +1,90 @@
 package com.carlosedp
 package rvasmweb
 
-// import scala.scalajs.js.annotation.JSExportTopLevel
-
 import com.carlosedp.riscvassembler.RISCVAssembler
-import org.scalajs.dom.*
-import org.scalajs.dom.html.*
+import com.raquo.laminar.api.L._
+import org.scalajs.dom
+import org.scalajs.dom.{Event, KeyCode, document, window}
 
 object MainApp:
 
-  def main(args: Array[String]): Unit =
-    document.addEventListener("DOMContentLoaded", (e: Event) => setupUI())
-
   def setupUI() =
-    // if window.location.pathname == "/api" then
-    //   println(window.location.search)
-    //   val asmParam = URLSearchParams(window.location.search).get("asm")
-    //   val hex      = RISCVAssembler.fromString(asmParam)
-    //   println(hex)
-    // else
+    val inASMAPI =
+      if window.location.pathname == "/api" then dom.URLSearchParams(window.location.search).get("asm") else ""
+    val initialAsm = """|addi x0, x0, 0
+                        |addi x1, x1, 1
+                        |addi x2, x2, 2
+                        |""".stripMargin
 
-    val appnode = document.getElementById("app")
-    addNode(appnode, "Scala.js RISC-V Assembler!", "h2")
+    val input = if inASMAPI == "" then initialAsm else inASMAPI
+    val inputASM = textArea(
+      input,
+      idAttr     := "asminput",
+      spellCheck := false,
+      title      := "Hitting enter or backspace also assembles to output",
+      onMountFocus,
+    )
 
-    // Create input textarea
-    addNode(appnode, "Assembly Input:", "p")
-    val asminput = addNode(appnode, "", "textarea", "asminput").asInstanceOf[TextArea]
-    asminput.id = "asminput"
-    asminput.spellcheck = false
-    asminput.title = "Hitting enter or backspace also assembles to output"
+    val outputHex = textArea(
+      idAttr     := "hexoutput",
+      spellCheck := false,
+      readOnly   := true,
+      title      := "Clicking the output area copies data to clipboard",
+    )
 
-    // Set initial value
-    asminput.textContent = """|addi x0, x0, 0
-                              |addi x1, x1, 1
-                              |addi x2, x2, 2
-                              |""".stripMargin
-
-    // Create output textarea
-    addNode(appnode, "Hex Output:", "p")
-    val hexout = addNode(appnode, "", "textarea", "hexoutput").asInstanceOf[TextArea]
-    hexout.readOnly = true
-    hexout.title = "Clicking the output area copies data to clipboard"
-    addNode(appnode, nodeType = "br")
-    hexout.addEventListener(
-      "click",
-      (e: MouseEvent) => {
-        hexout.select()
+    // Trigger assemble on Enter or Backspace keys
+    inputASM.amendThis { t =>
+      onKeyDown --> (e => if Seq(KeyCode.Backspace, KeyCode.Enter).contains(e.keyCode) then assemble(t, outputHex))
+    }
+    // Copy contents to clipboard on output textarea click
+    outputHex.amendThis { t =>
+      onClick --> (_ => {
+        t.ref.select()
         document.execCommand("copy")
         window.alert("Content copied to clipboard")
-      },
-    )
-
-    // Create Button
-    val assembleButton = document.createElement("button")
-    assembleButton.textContent = "Assemble"
-    assembleButton.addEventListener(
-      "click",
-      (e: MouseEvent) => {
-        assemble(asminput, hexout)
-      },
-    )
-    appnode.appendChild(assembleButton)
-
-    val buildinfo = addNode(appnode, "", "div", "buildinfo")
-    val link      = document.createElement("a").asInstanceOf[Anchor]
-    link.href = "https://github.com/carlosedp/riscvassembler"
-    link.target = "_blank"
-    link.innerHTML = "RISC-V Assembler library";
-    buildinfo.appendChild(link)
-    val p = document.createElement("p").asInstanceOf[Paragraph]
-    p.textContent = s"Version: ${RISCVAssembler.AppInfo.revision}"
-    buildinfo.appendChild(p)
-
-    // addNode(
-    //   buildinfo,
-    //   s"${link.outerHTML} version ${RISCVAssembler.AppInfo.revision}",
-    //   "p",
-    // )
-    addNode(buildinfo, s"Build date: ${RISCVAssembler.AppInfo.buildDate}", "p")
-
-    // Initialize
-    assemble(asminput, hexout)
-    // Attach event handler to input TextArea
-    asminput.onkeydown = { (e: KeyboardEvent) =>
-      if (Seq(KeyCode.Backspace, KeyCode.Enter).contains(e.keyCode)) assemble(asminput, hexout)
+      })
     }
 
-  def addNode(
-    targetNode: Node,
-    text:       String = "",
-    nodeType:   String = "p",
-    id:         String = "",
-  ): Node =
-    val n = document.createElement(nodeType)
-    n.textContent = text
-    n.id = id
-    targetNode.appendChild(n)
+    // BuildInfo section
+    val BuildInfo =
+      div(
+        idAttr := "buildinfo",
+        a(
+          "RISC-V Assembler library",
+          href   := "https://github.com/carlosedp/riscvassembler",
+          target := "_blank",
+        ),
+        p(s"Version: ${RISCVAssembler.AppInfo.appVersion}"),
+        p(s"Build date: ${RISCVAssembler.AppInfo.buildDate}"),
+      )
+
+    // Root element
+    val rootElement = div(
+      h2("Scala.js RISC-V Assembler!"),
+      label("Assembly Input:"),
+      inputASM,
+      label("Hex Output:"),
+      outputHex,
+      br(),
+      br(),
+      div(
+        idAttr := "centered",
+        button(
+          "Assemble",
+          onClick --> (_ => assemble(inputASM, outputHex)),
+        ),
+      ),
+      br(),
+      BuildInfo,
+    )
+
+    // Initialize with default textarea input and render
+    assemble(inputASM, outputHex)
+    val containerNode = document.getElementById("app")
+    render(containerNode, rootElement)
 
   def assemble(in: TextArea, out: TextArea) =
-    out.textContent = RISCVAssembler.fromString(in.value).trim
+    out.amend(value := RISCVAssembler.fromString(in.ref.value).trim)
+
+  def main(args: Array[String]): Unit =
+    document.addEventListener("DOMContentLoaded", (e: Event) => setupUI())

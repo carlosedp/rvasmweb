@@ -17,7 +17,7 @@ object libVersion {
   val scalajsdom      = "2.3.0"
   val scalatest       = "3.2.13"
   val riscvassembler  = "1.5.2"
-  val laminar         = "0.14.2"
+  val laminar         = "0.14.5"
 }
 
 trait Base extends ScalaModule with TpolecatModule with ScalafmtModule with ScalafixModule {
@@ -38,11 +38,13 @@ object rvasmweb extends ScalaJSModule with Base {
   def scalaJSVersion = libVersion.scalajs
   def ivyDeps = super.ivyDeps() ++ Agg(
     ivy"org.scala-js::scalajs-dom::${libVersion.scalajsdom}",
+    ivy"com.raquo::laminar::${libVersion.laminar}",
     ivy"com.carlosedp::riscvassembler::${libVersion.riscvassembler}",
   )
 
   def scalaJSUseMainModuleInitializer = true
   def moduleKind                      = T(ModuleKind.ESModule)
+  def moduleSplitStyle                = T(ModuleSplitStyle.SmallModulesFor(List("com.carlosedp.rvasmweb")))
 
   // These two tasks are used by Vite to get update path
   def fastLinkOut() = T.command {
