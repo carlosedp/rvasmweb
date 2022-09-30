@@ -3,6 +3,7 @@ package rvasmweb
 
 import org.scalajs.dom.*
 import org.scalajs.dom.html.*
+import com.raquo.laminar.api.L.render
 import org.scalatest.*
 import org.scalatest.flatspec._
 import org.scalatest.matchers._
@@ -13,7 +14,7 @@ class MainSpec extends AnyFlatSpec with should.Matchers {
   appDiv.id = "app"
   document.body.appendChild(appDiv)
   // Initialize App
-  MainApp.setupUI()
+  render(appDiv, MainApp.setupUI())
 
   behavior of "Main App"
 

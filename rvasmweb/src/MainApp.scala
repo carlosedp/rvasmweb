@@ -15,16 +15,16 @@ object MainApp:
                         |addi x1, x1, 1
                         |addi x2, x2, 2
                         |""".stripMargin
-
     val input = if inASMAPI == "" then initialAsm else inASMAPI
+    // Create the input ASM TextArea
     val inputASM = textArea(
-      input,
-      idAttr     := "asminput",
-      spellCheck := false,
-      title      := "Hitting enter or backspace also assembles to output",
+      defaultValue := input,
+      idAttr       := "asminput",
+      spellCheck   := false,
+      title        := "Hitting enter or backspace also assembles to output",
       onMountFocus,
     )
-
+    // Create the output HEX TextArea
     val outputHex = textArea(
       idAttr     := "hexoutput",
       spellCheck := false,
@@ -78,13 +78,12 @@ object MainApp:
       BuildInfo,
     )
 
-    // Initialize with default textarea input and render
+    // Initialize with default textarea input and return root element
     assemble(inputASM, outputHex)
-    val containerNode = document.getElementById("app")
-    render(containerNode, rootElement)
+    rootElement
 
   def assemble(in: TextArea, out: TextArea) =
     out.amend(value := RISCVAssembler.fromString(in.ref.value).trim)
 
   def main(args: Array[String]): Unit =
-    document.addEventListener("DOMContentLoaded", (e: Event) => setupUI())
+    renderOnDomContentLoaded(document.getElementById("app"), setupUI())
