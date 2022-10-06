@@ -1,12 +1,12 @@
 package com.carlosedp
 package rvasmweb
 
+import com.raquo.laminar.api.L.render
 import org.scalajs.dom.*
 import org.scalajs.dom.html.*
-import com.raquo.laminar.api.L.render
 import org.scalatest.*
-import org.scalatest.flatspec._
-import org.scalatest.matchers._
+import org.scalatest.flatspec.*
+import org.scalatest.matchers.*
 
 class MainSpec extends AnyFlatSpec with should.Matchers {
   // Initialize Test for elements we don't create in Scala.js (exists in index.html)

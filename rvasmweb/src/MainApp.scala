@@ -2,7 +2,7 @@ package com.carlosedp
 package rvasmweb
 
 import com.carlosedp.riscvassembler.RISCVAssembler
-import com.raquo.laminar.api.L._
+import com.raquo.laminar.api.L.*
 import org.scalajs.dom
 import org.scalajs.dom.{Event, KeyCode, document, window}
 
