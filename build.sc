@@ -15,8 +15,8 @@ object libVersion {
   val scalajs         = "1.11.0"
   val organizeimports = "0.6.0"
   val scalajsdom      = "2.3.0"
-  val scalatest       = "3.2.13"
-  val riscvassembler  = "1.5.2"
+  val scalatest       = "3.2.14"
+  val riscvassembler  = "1.6.0"
   val laminar         = "0.14.5"
 }
 
