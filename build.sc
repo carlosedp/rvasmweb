@@ -5,7 +5,7 @@ import coursier.maven.MavenRepository
 
 import $ivy.`com.lihaoyi::mill-contrib-docker:$MILL_VERSION`
 import contrib.docker.DockerModule
-import $ivy.`com.goyeau::mill-scalafix::0.2.10`
+import $ivy.`com.goyeau::mill-scalafix::0.2.11`
 import com.goyeau.mill.scalafix.ScalafixModule
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.1`
 import io.github.davidgregory084.TpolecatModule
@@ -16,7 +16,7 @@ object libVersion {
   val organizeimports = "0.6.0"
   val scalajsdom      = "2.3.0"
   val scalatest       = "3.2.14"
-  val riscvassembler  = "1.6.0"
+  val riscvassembler  = "1.6.1"
   val laminar         = "0.14.5"
 }
 
