@@ -21,7 +21,7 @@ object MainApp:
       defaultValue := input,
       idAttr       := "asminput",
       spellCheck   := false,
-      title        := "Hitting enter or backspace also assembles to output",
+      title        := "Hitting enter, up, down or backspace also assembles to output",
       onMountFocus,
     )
     // Create the output HEX TextArea
@@ -32,9 +32,12 @@ object MainApp:
       title      := "Clicking the output area copies data to clipboard",
     )
 
-    // Trigger assemble on Enter or Backspace keys
+    // Trigger assemble on Enter, Up, Down or Backspace keys
     inputASM.amendThis { t =>
-      onKeyDown --> (e => if Seq(KeyCode.Backspace, KeyCode.Enter).contains(e.keyCode) then assemble(t, outputHex))
+      onKeyDown --> (e =>
+        if Seq(KeyCode.Backspace, KeyCode.Enter, KeyCode.Up, KeyCode.Down).contains(e.keyCode) then
+          assemble(t, outputHex)
+      )
     }
     // Copy contents to clipboard on output textarea click
     outputHex.amendThis { t =>

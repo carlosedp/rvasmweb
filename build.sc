@@ -3,16 +3,14 @@ import mill.scalajslib._, mill.scalajslib.api._
 import scalafmt._
 import coursier.maven.MavenRepository
 
-import $ivy.`com.lihaoyi::mill-contrib-docker:$MILL_VERSION`
-import contrib.docker.DockerModule
 import $ivy.`com.goyeau::mill-scalafix::0.2.11`
 import com.goyeau.mill.scalafix.ScalafixModule
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.1`
 import io.github.davidgregory084.TpolecatModule
 
 object libVersion {
-  val scala           = "3.2.0"
-  val scalajs         = "1.11.0"
+  val scala           = "3.2.1"
+  val scalajs         = "1.12.0"
   val organizeimports = "0.6.0"
   val scalajsdom      = "2.3.0"
   val scalatest       = "3.2.14"
