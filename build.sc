@@ -9,13 +9,13 @@ import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.1`
 import io.github.davidgregory084.TpolecatModule
 
 object libVersion {
-  val scala           = "3.2.1"
-  val scalajs         = "1.12.0"
+  val scala           = "3.2.2"
+  val scalajs         = "1.13.1"
   val organizeimports = "0.6.0"
-  val scalajsdom      = "2.3.0"
-  val scalatest       = "3.2.14"
-  val riscvassembler  = "1.7.0"
-  val laminar         = "0.14.5"
+  val scalajsdom      = "2.6.0"
+  val scalatest       = "3.2.16"
+  val riscvassembler  = "1.7.1"
+  val laminar         = "15.0.1"
 }
 
 trait Base extends ScalaModule with TpolecatModule with ScalafmtModule with ScalafixModule {
@@ -57,25 +57,31 @@ object rvasmweb extends ScalaJSModule with Base {
   object test extends Tests with Base with TestModule.ScalaTest {
     // Test dependencies
     def ivyDeps = Agg(
-      ivy"org.scalatest::scalatest::${libVersion.scalatest}",
+      ivy"org.scalatest::scalatest::${libVersion.scalatest}"
     )
     def jsEnvConfig = T(JsEnvConfig.JsDom())
   }
 }
 
 // -----------------------------------------------------------------------------
-// Global commands
+// Command Aliases
 // -----------------------------------------------------------------------------
-def runTasks(t: Seq[String])(implicit ev: eval.Evaluator) = T.task {
-  mill.main.MainModule.evaluateTasks(
-    ev,
-    t.flatMap(x => x +: Seq("+")).flatMap(x => x.split(" ")).dropRight(1),
-    mill.define.SelectMode.Separated,
-  )(identity)
-}
-def lint(implicit ev: eval.Evaluator) = T.command {
-  runTasks(Seq("__.fix", "mill.scalalib.scalafmt.ScalafmtModule/reformatAll __.sources"))
-}
-def deps(ev: eval.Evaluator) = T.command {
-  mill.scalalib.Dependency.showUpdates(ev)
+// Alias commands are run like `./mill run [alias]`
+// Define the alias as a map element containing the alias name and a Seq with the tasks to be executed
+val aliases: Map[String, Seq[String]] = Map(
+  "fmt"      -> Seq("mill.scalalib.scalafmt.ScalafmtModule/reformatAll __.sources"),
+  "checkfmt" -> Seq("mill.scalalib.scalafmt.ScalafmtModule/checkFormatAll __.sources"),
+  "deps"     -> Seq("mill.scalalib.Dependency/showUpdates"),
+  "testall"  -> Seq("__.test"),
+)
+
+def run(ev: eval.Evaluator, alias: String = "") = T.command {
+  aliases.get(alias) match {
+    case Some(t) =>
+      mill.main.MainModule.evaluateTasks(ev, t.flatMap(x => Seq(x, "+")).flatMap(_.split("\\s+")).init, false)(identity)
+    case None =>
+      Console.err.println("Use './mill run [alias]'."); Console.out.println("Available aliases:")
+      aliases.foreach(x => Console.out.println(s"${x._1.padTo(15, ' ')} - Commands: (${x._2.mkString(", ")})"));
+      sys.exit(1)
+  }
 }

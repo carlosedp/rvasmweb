@@ -8,7 +8,7 @@ import org.scalatest.*
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.*
 
-class MainSpec extends AnyFlatSpec with should.Matchers {
+class MainSpec extends AnyFlatSpec with should.Matchers:
   // Initialize Test for elements we don't create in Scala.js (exists in index.html)
   val appDiv = document.createElement("div")
   appDiv.id = "app"
@@ -69,5 +69,3 @@ class MainSpec extends AnyFlatSpec with should.Matchers {
                            |0800006F
     """.stripMargin.trim)
   }
-
-}

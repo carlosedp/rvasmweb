@@ -41,11 +41,11 @@ object MainApp:
     }
     // Copy contents to clipboard on output textarea click
     outputHex.amendThis { t =>
-      onClick --> (_ => {
+      onClick --> (_ =>
         t.ref.select()
         document.execCommand("copy")
         window.alert("Content copied to clipboard")
-      })
+      )
     }
 
     // BuildInfo section
