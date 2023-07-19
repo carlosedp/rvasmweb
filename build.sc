@@ -3,36 +3,28 @@ import mill.scalajslib._, mill.scalajslib.api._
 import scalafmt._
 import coursier.maven.MavenRepository
 
-import $ivy.`com.goyeau::mill-scalafix::0.2.11`
+import $ivy.`com.goyeau::mill-scalafix::0.3.1`
 import com.goyeau.mill.scalafix.ScalafixModule
-import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.1`
+import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.5`
 import io.github.davidgregory084.TpolecatModule
+import $ivy.`com.carlosedp::mill-aliases::0.3.0`
+import com.carlosedp.aliases._
 
 object libVersion {
-  val scala           = "3.2.2"
-  val scalajs         = "1.13.1"
-  val organizeimports = "0.6.0"
-  val scalajsdom      = "2.6.0"
-  val scalatest       = "3.2.16"
-  val riscvassembler  = "1.7.1"
-  val laminar         = "15.0.1"
-}
-
-trait Base extends ScalaModule with TpolecatModule with ScalafmtModule with ScalafixModule {
-  override def scalaVersion = libVersion.scala
-  def scalafixIvyDeps       = Agg(ivy"com.github.liancheng::organize-imports:${libVersion.organizeimports}")
-  def repositoriesTask = T.task {
-    super.repositoriesTask() ++ Seq("oss", "s01.oss")
-      .map(r => s"https://$r.sonatype.org/content/repositories/snapshots")
-      .map(MavenRepository(_))
-  }
+  val scala          = "3.3.0"
+  val scalajs        = "1.13.2"
+  val scalajsdom     = "2.6.0"
+  val scalatest      = "3.2.16"
+  val riscvassembler = "1.9.0"
+  val laminar        = "16.0.0"
 }
 
 // -----------------------------------------------------------------------------
 // Projects
 // -----------------------------------------------------------------------------
 
-object rvasmweb extends ScalaJSModule with Base {
+object rvasmweb extends ScalaJSModule with TpolecatModule with ScalafmtModule with ScalafixModule {
+  def scalaVersion   = libVersion.scala
   def scalaJSVersion = libVersion.scalajs
   def ivyDeps = super.ivyDeps() ++ Agg(
     ivy"org.scala-js::scalajs-dom::${libVersion.scalajsdom}",
@@ -41,8 +33,18 @@ object rvasmweb extends ScalaJSModule with Base {
   )
 
   def scalaJSUseMainModuleInitializer = true
-  def moduleKind                      = T(ModuleKind.ESModule)
-  def moduleSplitStyle                = T(ModuleSplitStyle.SmallModulesFor(List("com.carlosedp.rvasmweb")))
+  def moduleKind                      = ModuleKind.ESModule
+  def moduleSplitStyle                = ModuleSplitStyle.SmallModulesFor(List("com.carlosedp.rvasmweb"))
+
+  object test extends ScalaJSTests with TestModule.ScalaTest {
+    // Override params so tests work
+    def moduleKind       = ModuleKind.NoModule
+    def jsEnvConfig      = JsEnvConfig.JsDom()
+    def moduleSplitStyle = ModuleSplitStyle.FewestModules
+    def ivyDeps = Agg(
+      ivy"org.scalatest::scalatest::${libVersion.scalatest}"
+    )
+  }
 
   // These two tasks are used by Vite to get update path
   def fastLinkOut() = T.command {
@@ -53,35 +55,13 @@ object rvasmweb extends ScalaJSModule with Base {
     val target = fullLinkJS()
     println(target.dest.path)
   }
-
-  object test extends Tests with Base with TestModule.ScalaTest {
-    // Test dependencies
-    def ivyDeps = Agg(
-      ivy"org.scalatest::scalatest::${libVersion.scalatest}"
-    )
-    def jsEnvConfig = T(JsEnvConfig.JsDom())
-  }
 }
 
-// -----------------------------------------------------------------------------
-// Command Aliases
-// -----------------------------------------------------------------------------
-// Alias commands are run like `./mill run [alias]`
-// Define the alias as a map element containing the alias name and a Seq with the tasks to be executed
-val aliases: Map[String, Seq[String]] = Map(
-  "fmt"      -> Seq("mill.scalalib.scalafmt.ScalafmtModule/reformatAll __.sources"),
-  "checkfmt" -> Seq("mill.scalalib.scalafmt.ScalafmtModule/checkFormatAll __.sources"),
-  "deps"     -> Seq("mill.scalalib.Dependency/showUpdates"),
-  "testall"  -> Seq("__.test"),
-)
+object MyAliases extends Aliases {
+  def fmt      = alias("mill.scalalib.scalafmt.ScalafmtModule/reformatAll __.sources")
+  def checkfmt = alias("mill.scalalib.scalafmt.ScalafmtModule/checkFormatAll __.sources")
+  def lint     = alias("mill.scalalib.scalafmt.ScalafmtModule/reformatAll __.sources", "__.fix")
+  def deps     = alias("mill.scalalib.Dependency/showUpdates")
+  def testall  = alias("__.test")
 
-def run(ev: eval.Evaluator, alias: String = "") = T.command {
-  aliases.get(alias) match {
-    case Some(t) =>
-      mill.main.MainModule.evaluateTasks(ev, t.flatMap(x => Seq(x, "+")).flatMap(_.split("\\s+")).init, false)(identity)
-    case None =>
-      Console.err.println("Use './mill run [alias]'."); Console.out.println("Available aliases:")
-      aliases.foreach(x => Console.out.println(s"${x._1.padTo(15, ' ')} - Commands: (${x._2.mkString(", ")})"));
-      sys.exit(1)
-  }
 }
