@@ -33,8 +33,18 @@ object rvasmweb extends ScalaJSModule with TpolecatModule with ScalafmtModule wi
   )
 
   def scalaJSUseMainModuleInitializer = true
-  def moduleKind                      = T(ModuleKind.ESModule)
-  def moduleSplitStyle                = T(ModuleSplitStyle.SmallModulesFor(List("com.carlosedp.rvasmweb")))
+  def moduleKind                      = ModuleKind.ESModule
+  def moduleSplitStyle                = ModuleSplitStyle.SmallModulesFor(List("com.carlosedp.rvasmweb"))
+
+  object test extends ScalaJSTests with TestModule.ScalaTest {
+    // Override params so tests work
+    def moduleKind       = ModuleKind.NoModule
+    def jsEnvConfig      = JsEnvConfig.JsDom()
+    def moduleSplitStyle = ModuleSplitStyle.FewestModules
+    def ivyDeps = Agg(
+      ivy"org.scalatest::scalatest::${libVersion.scalatest}"
+    )
+  }
 
   // These two tasks are used by Vite to get update path
   def fastLinkOut() = T.command {
@@ -44,12 +54,6 @@ object rvasmweb extends ScalaJSModule with TpolecatModule with ScalafmtModule wi
   def fullLinkOut() = T.command {
     val target = fullLinkJS()
     println(target.dest.path)
-  }
-
-  object test extends ScalaJSTests with TestModule.ScalaTest {
-    def ivyDeps = Agg(
-      ivy"org.scalatest::scalatest::${libVersion.scalatest}"
-    )
   }
 }
 
