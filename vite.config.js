@@ -1,6 +1,6 @@
 import { spawnSync } from "child_process";
 import { defineConfig } from "vite";
-import { VitePluginFonts } from 'vite-plugin-fonts'
+import Unfonts from 'unplugin-fonts/vite'
 
 function isDev() {
     return process.env.NODE_ENV !== "production";
@@ -35,7 +35,7 @@ export default defineConfig({
     root: "rvasmweb/web",
     base: '',
     plugins: [
-        VitePluginFonts({
+        Unfonts({
             google: {
                 families: ['Droid Sans', 'Source Code Pro'],
             },

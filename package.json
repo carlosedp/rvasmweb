@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "vite": "^4.5.0",
-    "vite-plugin-fonts": "^0.7.0",
+    "unplugin-fonts": "^1.1.0",
     "sass": "^1.69.6"
   },
   "scripts": {
