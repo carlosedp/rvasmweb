@@ -10,7 +10,7 @@
   "devDependencies": {
     "vite": "^7.1.9",
     "unplugin-fonts": "^1.4.0",
-    "sass": "^1.90.0"
+    "sass": "^1.93.2"
   },
   "scripts": {
     "lint": "./mill lint",
