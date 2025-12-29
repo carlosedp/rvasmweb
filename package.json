@@ -5,7 +5,7 @@
   "license": "MIT",
   "version": "0.0.1",
   "dependencies": {
-    "jsdom": "^27.3.0"
+    "jsdom": "^27.4.0"
   },
   "devDependencies": {
     "vite": "^7.3.0",
