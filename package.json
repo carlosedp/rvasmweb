@@ -8,7 +8,7 @@
     "jsdom": "^29.1.1"
   },
   "devDependencies": {
-    "vite": "^8.1.2",
+    "vite": "^8.1.3",
     "unplugin-fonts": "^2.0.0",
     "sass": "^1.101.0"
   },
